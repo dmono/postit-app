@@ -10,7 +10,17 @@ PostitTemplate::Application.routes.draw do
   get '/logout', to: 'sessions#destroy' # rails assumes you want logout_path
 
   resources :posts, except: [:destroy] do
-    resources :comments, only: [:create]
+    # use custom route to map this URL /posts/2/vote to PostController vote action
+    # use member to create a route that pertains to an individual member's resource
+    member do
+      post 'vote'
+    end
+
+    resources :comments, only: [:create] do
+      member do
+        post 'vote' # /posts/post_id/comments/comment_id/vote
+      end
+    end
   end
 
   resources :categories, only: [:new, :create, :show]
